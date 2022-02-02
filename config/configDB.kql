@@ -1,0 +1,37 @@
+.create table StageIoTRawData (deviceId: string, enqueuedTime: datetime, messageProperties: dynamic, messageSource: string, telemetry: dynamic) 
+
+.create table StageIoTRawData ingestion json mapping 'StageIoTRawData_mapping' '[{"column":"deviceId","path":"$['deviceId']","datatype":"","transform":null},{"column":"enqueuedTime","path":"$['enqueuedTime']","datatype":"","transform":null},{"column":"messageProperties","path":"$['messageProperties']","datatype":"","transform":null},{"column":"telemetry","path":"$['telemetry']","datatype":"","transform":null}]'
+
+.create table Thermostats (EnqueuedTimeUTC: datetime, DeviceId: string, BatteryLevel: long, Temp: real, Humidity: real) 
+
+
+
+.create-or-alter function with (docstring = "Used for Thermostat Update Policy",folder = "Functions") ExtractThermostatData {
+	StageIoTRawData
+	| where telemetry has 'temp'
+	| project 
+	EnqueuedTimeUTC=enqueuedTime,
+	DeviceId=deviceId,
+	BatteryLevel = tolong(telemetry.['BatteryLevel']), 
+	Temp =  toreal(telemetry.['temp']),
+	Humidity =  toreal(telemetry.['humidity'])
+}
+
+.create-or-alter function with (folder = "Analytics/IoT", skipvalidation = "true") GetDevices(storeName:string, Department:string) {
+	let ADTendpoint = "https://<dtURI>";
+	let ADTquery = strcat("Select Device.$dtId as Device FROM DIGITALTWINS T JOIN Department RELATED T.officecontainsfloors JOIN Device RELATED Department.departmentownsdevice where T.$dtId = '", facilityName, "' AND Department.$dtId = '", department, "'");
+	evaluate azure_digital_twins_query_request(ADTendpoint, ADTquery)
+    | project Device=tostring(Device)
+    | order by Device asc
+} 
+
+.create-or-alter function with (folder = "Analytics/IoT", skipvalidation = "true") GetStores() {
+	let ADTendpoint = "https://<dtURI>";
+	let ADTquery = strcat("Select T.$dtId as Facility FROM DIGITALTWINS T where T.$metadata.$model = 'dtmi:PatientMonitoring:MedicalFacility;1'");
+	evaluate azure_digital_twins_query_request(ADTendpoint, ADTquery)
+    | project Facility=tostring(Facility)
+} 
+
+
+.alter table Thermostat policy update 
+@'[{ "IsEnabled": true, "Source": "TelemetryRaw", "Query": "ExtractThermostatData()", "IsTransactional": false, "PropagateIngestionProperties": false}]'
