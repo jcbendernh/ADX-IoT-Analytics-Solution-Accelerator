@@ -3,12 +3,12 @@
 # Helper Functions
 function banner() {
     clear
-    echo '           _______   __             ______  _______                '
-    echo '     /\   |  __ \ \ / /          | |     |     |                   '
-    echo '    /  \  | |  | \ V /   ______  | |     |     |                   '
-    echo "   / /\ \ | |  | |> <   |______| | |     |     |                   "
-    echo '  / ____ \| |__| / . \           | |     |     |                   '
-    echo ' /_/    \_\_____/_/_\_\          | |_____|     |                   '
+    echo '           _______   __           _   ______   ________            '
+    echo '     /\   |  __ \ \ / /          | | |  _   | |__   ___|           '
+    echo '    /  \  | |  | \ V /   ______  | | | |  | |    |  |              '
+    echo "   / /\ \ | |  | |> <   |______| | | | |  | |    |  |              "
+    echo '  / ____ \| |__| / . \           | | | |__| |    |  |              '
+    echo ' /_/    \_\_____/_/_\_\          |_| |_____ |    |_ |              '
     echo '        |__   __| | |                   | |                        '
     echo '           | | ___| | ___ _ __ ___   ___| |_ _ __ _   _            '
     echo "           | |/ _ \ |/ _ \ '_ \` _ \ / _ \ __| '__| | | |          "
@@ -173,7 +173,7 @@ function deploy_thermostat_devices() {
     do
         deviceId=$(cat /proc/sys/kernel/random/uuid)
         az iot central device create --device-id $deviceId --app-id $iotCentralAppID \
-            --template urn:ywopo3dbt:q5h5r7qas --simulated --only-show-errors --output none
+            --template dtmi:m43gbjjsrr5:fp1yz0dm0qs --simulated --only-show-errors --output none
 
         floornum=$(expr $c % 6)
         
