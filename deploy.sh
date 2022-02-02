@@ -68,7 +68,7 @@ function get_deployment_output() {
     eventHubResourceId="$eventHubNSId/eventhubs/iotdata"
     iotCentralName=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.iotCentralName.value --output tsv)
     iotCentralAppID=$(az iot central app show -n $iotCentralName -g $rgName --query  applicationId --output tsv)
-    numDevices=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.DeviceNumber.value --output tsv)
+    numDevices=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.deviceNumber.value --output tsv)
     eventHubConnectionString=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.eventHubConnectionString.value --output tsv)
 }
 
