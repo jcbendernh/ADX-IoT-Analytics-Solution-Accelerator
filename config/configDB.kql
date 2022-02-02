@@ -1,6 +1,6 @@
 .create table StageIoTRawData (deviceId: string, enqueuedTime: datetime, messageProperties: dynamic, messageSource: string, telemetry: dynamic) 
 
-.create table StageIoTRawData ingestion json mapping 'StageIoTRawData_mapping' '[{"column":"deviceId","path":"$['deviceId']","datatype":"","transform":null},{"column":"enqueuedTime","path":"$['enqueuedTime']","datatype":"","transform":null},{"column":"messageProperties","path":"$['messageProperties']","datatype":"","transform":null},{"column":"telemetry","path":"$['telemetry']","datatype":"","transform":null}]'
+.create table StageIoTRawData ingestion json mapping 'StageIoTRawData_mapping' '[{"column":"deviceId","path":"$deviceId","datatype":"","transform":null},{"column":"enqueuedTime","path":"$enqueuedTime","datatype":"","transform":null},{"column":"messageProperties","path":"$messageProperties","datatype":"","transform":null},{"column":"telemetry","path":"$telemetry","datatype":"","transform":null}]'
 
 .create table Thermostats (EnqueuedTimeUTC: datetime, DeviceId: string, BatteryLevel: long, Temp: real, Humidity: real) 
 

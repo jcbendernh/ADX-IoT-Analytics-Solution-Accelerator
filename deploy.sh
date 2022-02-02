@@ -65,7 +65,7 @@ function get_deployment_output() {
     adxResoureId=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.adxClusterId.value --output tsv)
     location=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.location.value --output tsv)
     eventHubNSId=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.eventhubClusterId.value --output tsv)
-    eventHubResourceId="$eventHubNSId/eventhubs/PatientMonitoring"
+    eventHubResourceId="$eventHubNSId/eventhubs/iotdata"
     iotCentralName=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.iotCentralName.value --output tsv)
     iotCentralAppID=$(az iot central app show -n $iotCentralName -g $rgName --query  applicationId --output tsv)
     numDevices=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.DeviceNumber.value --output tsv)
@@ -97,16 +97,19 @@ function create_digital_twin_models() {
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id DAL1 --only-show-errors --output none; \
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id DAL2 --only-show-errors --output none; \
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id DAL3 --only-show-errors --output none; \
+    az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id DAL4 --only-show-errors --output none; \
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id DAL5 --only-show-errors --output none; \
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id DAL6 --only-show-errors --output none; \
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id SEA1 --only-show-errors --output none; \
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id SEA2 --only-show-errors --output none; \
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id SEA3 --only-show-errors --output none; \
+    az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id SEA4 --only-show-errors --output none; \
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id SEA5 --only-show-errors --output none; \
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id SEA6 --only-show-errors --output none; \
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id ATL1 --only-show-errors --output none; \
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id ATL2 --only-show-errors --output none; \
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id ATL3 --only-show-errors --output none; \
+    az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id ATL4 --only-show-errors --output none; \
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id ATL5 --only-show-errors --output none; \
     az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Floor;1" --twin-id ATL6 --only-show-errors --output none; \
     az dt twin relationship create -n $dtName --relationship-id 'DAL_F1'  \
