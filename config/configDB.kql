@@ -4,8 +4,6 @@
 
 .create table Thermostats (EnqueuedTimeUTC: datetime, DeviceId: string, BatteryLevel: long, Temp: real, Humidity: real) 
 
-
-
 .create-or-alter function with (docstring = "Used for Thermostat Update Policy",folder = "Functions") ExtractThermostatData {
 	StageIoTRawData
 	| where telemetry has 'temp'
@@ -34,4 +32,4 @@
 
 
 .alter table Thermostat policy update 
-@'[{ "IsEnabled": true, "Source": "TelemetryRaw", "Query": "ExtractThermostatData()", "IsTransactional": false, "PropagateIngestionProperties": false}]'
+@'[{ "IsEnabled": true, "Source": "StageIoTRawData", "Query": "ExtractThermostatData()", "IsTransactional": false, "PropagateIngestionProperties": false}]'
