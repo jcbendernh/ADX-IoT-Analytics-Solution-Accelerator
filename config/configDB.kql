@@ -1,6 +1,10 @@
-.create table StageIoTRawData (deviceId: string, enqueuedTime: datetime, messageProperties: dynamic, messageSource: string, telemetry: dynamic) 
+.create table ['StageIoTRawData'] (['deviceId']:string, ['enqueuedTime']:datetime, ['messageProperties']:dynamic, ['messageSource']:string, ['telemetry']:dynamic, ['templateId']:string, ['schema']:string)
 
-.create table StageIoTRawData ingestion json mapping 'StageIoTRawData_mapping' '[{"column":"deviceId","path":"$deviceId","datatype":"","transform":null},{"column":"enqueuedTime","path":"$enqueuedTime","datatype":"","transform":null},{"column":"messageProperties","path":"$messageProperties","datatype":"","transform":null},{"column":"telemetry","path":"$telemetry","datatype":"","transform":null}]'
+.alter table StageIoTRawData policy ingestionbatching @'{"MaximumBatchingTimeSpan":"00:00:30"}'
+
+// Create mapping command
+////////////////////////////////////////////////////////////
+.create table ['StageIoTRawData'] ingestion json mapping 'StageIoTRawData_mapping' '[{"column":"deviceId", "Properties":{"Path":"$[\'deviceId\']"}},{"column":"enqueuedTime", "Properties":{"Path":"$[\'enqueuedTime\']"}},{"column":"messageProperties", "Properties":{"Path":"$[\'messageProperties\']"}},{"column":"messageSource", "Properties":{"Path":"$[\'messageSource\']"}},{"column":"telemetry", "Properties":{"Path":"$[\'telemetry\']"}},{"column":"templateId", "Properties":{"Path":"$[\'templateId\']"}},{"column":"schema", "Properties":{"Path":"$[\'schema\']"}}]'
 
 .create table Thermostats (EnqueuedTimeUTC: datetime, DeviceId: string, BatteryLevel: long, Temp: real, Humidity: real) 
 
@@ -15,20 +19,21 @@
 	Humidity =  toreal(telemetry.['humidity'])
 }
 
-.create-or-alter function with (folder = "Analytics/IoT", skipvalidation = "true") GetDevices(storeName:string, Department:string) {
+.create-or-alter function with (folder = "Analytics/IoT", skipvalidation = "true") GetDevicesbyStore(Office:string) {
 	let ADTendpoint = "https://<dtURI>";
-	let ADTquery = strcat("Select Device.$dtId as Device FROM DIGITALTWINS T JOIN Department RELATED T.officecontainsfloors JOIN Device RELATED Department.departmentownsdevice where T.$dtId = '", facilityName, "' AND Department.$dtId = '", department, "'");
+	let ADTquery = strcat("SELECT T.$dtId as Office, F.$dtId as Floor, D.$dtId as DeviceId FROM DIGITALTWINS T JOIN F RELATED T.officecontainsfloors JOIN D RELATED F.floorcontainsdevices where T.$dtId='", Office, "'"); 
 	evaluate azure_digital_twins_query_request(ADTendpoint, ADTquery)
-    | project Device=tostring(Device)
-    | order by Device asc
+    | project Office=tostring(Office), Floor=tostring(Floor), DeviceId=tostring(DeviceId)
 } 
 
-.create-or-alter function with (folder = "Analytics/IoT", skipvalidation = "true") GetStores() {
+.create-or-alter function with (folder = "Analytics/IoT", skipvalidation = "true") GetDevicesbyStoreFloor(Office:string, Floor:string) {
 	let ADTendpoint = "https://<dtURI>";
-	let ADTquery = strcat("Select T.$dtId as Facility FROM DIGITALTWINS T where T.$metadata.$model = 'dtmi:PatientMonitoring:MedicalFacility;1'");
+	let ADTquery = strcat("SELECT T.$dtId as Office, F.$dtId as Floor, D.$dtId as DeviceId FROM DIGITALTWINS T JOIN F RELATED T.officecontainsfloors JOIN D RELATED F.floorcontainsdevices where T.$dtId!='", Office, "' AND F.$dtId = '", Floor, "'"); 
 	evaluate azure_digital_twins_query_request(ADTendpoint, ADTquery)
-    | project Facility=tostring(Facility)
-} 
+    | project Office=tostring(Office), Floor=tostring(Floor), DeviceId=tostring(DeviceId)
+}
+
+
 
 
 .alter table Thermostats policy update 

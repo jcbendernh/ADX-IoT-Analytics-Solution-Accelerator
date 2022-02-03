@@ -175,7 +175,7 @@ function deploy_thermostat_devices() {
         az iot central device create --device-id $deviceId --app-id $iotCentralAppID \
             --template dtmi:m43gbjjsrr5:fp1yz0dm0qs --simulated --only-show-errors --output none
 
-        floornum=$(expr $c % 6)
+        floornum=$(expr $c % 18)
         
         floor=${floors[$floornum]}
             
