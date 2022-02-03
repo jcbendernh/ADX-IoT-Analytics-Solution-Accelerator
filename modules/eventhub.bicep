@@ -22,6 +22,15 @@ resource eventHubNamespaceName_eventHubName 'Microsoft.EventHub/namespaces/event
   }
 }
 
+resource eventHubNamespaceName_historicHubName 'Microsoft.EventHub/namespaces/eventhubs@2021-11-01' = {
+  parent: eventhubCluster
+  name: 'historicdata'
+  properties: {
+    messageRetentionInDays: 7
+    partitionCount: 1
+  }
+}
+
 // Grant Listen and Send on our event hub
 resource eventHubNamespaceName_eventHubName_ListenSend 'Microsoft.EventHub/namespaces/eventhubs/authorizationRules@2021-01-01-preview' = {
   parent: eventHubNamespaceName_eventHubName
