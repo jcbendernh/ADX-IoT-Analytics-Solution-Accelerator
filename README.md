@@ -1,17 +1,21 @@
-# ADX Connected Devices - Patient Monitoring Demo
+# ADX IoT Analytics Demo
+Azure Data Explorer can provide valuable insights into your Iot workloads. In the following Demo we look at thermostat IoT Devices that are in 3 different office buildings.
 
-![alt tag](./assets/AutomationPresentation.gif)
-
-This example shows how to use ADX to monitor a patient's vitals and knee brace readings. It leverages (Azure Bicep)[https://docs.microsoft.com/EN-US/azure/azure-resource-manager/bicep/] and the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/) to automate the entire deployment.
-
-The solution uses [Azure IoT Central](https://azure.microsoft.com/en-us/services/iot-central/) Continuous Patient Monitoring [application](https://docs.microsoft.com/en-us/azure/iot-central/core/concepts-app-templates#continuous-patient-monitoring) to generate telemetry readings for two IoT Consumer devices: automated knee brace and a vitals monitor patch. The generated data is automatically send to an [Azure Event Hub](https://azure.microsoft.com/en-us/services/event-hubs/) and then send to an [Azure Data Explorer](https://azure.microsoft.com/en-us/services/data-explorer/) for analysis.
-
-An [Azure Digital Twins](https://azure.microsoft.com/en-us/services/digital-twins/) service is used to store additional simulated devices metadata.
-
-The Azure Data Explorer cluster is configured with a database, a set of tables to store telemetry data from both devices, and a set of functions to parse incoming data and to query data directly from the Azure Digital Twins service.
-
-The solution includes a [Power BI](https://powerbi.microsoft.com/en-us/) report to visualize the data. Just download the [file](/assets/Connected_Devices.pbix) and open it in Power BI.  
-
+The following will deploy the following:
+- IoT Central Store Analytics Template 
+  - 36 thermostat devices being created and simulated
+  - Setup Export to Event Hub of telemetry data
+- Event Hub 
+  - Data exported from IoT Central
+  - ADX Data Connection to ingest data
+- Azure Digital Twins
+  - Office, Floors, and Thermostat twins
+  - Atlanta, Dallas, Seattle offices with 6 Floors in each
+  - 36 Thermostat twins created spread across the 3 offices with 2 on each floor
+- Azure Data Explorer
+  - StageIoTRaw table where data lands from Event Hub to get new data
+  - Thermastat table with update policy to transform raw data
+  - Historical data from January 2022 loaded into Thermostat table
 
 ## Deployment instructions
 
