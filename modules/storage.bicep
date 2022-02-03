@@ -25,7 +25,7 @@ resource eventgrid 'Microsoft.EventGrid/systemTopics@2021-12-01' = {
   location: location
   properties: {
     source: storageaccount.id
-    topicType: 'Microsoft.Storage.SotrageAccount'
+    topicType: 'Microsoft.Storage.StorageAccounts'
   }
 
   resource eventSub 'eventSubscriptions' = {
