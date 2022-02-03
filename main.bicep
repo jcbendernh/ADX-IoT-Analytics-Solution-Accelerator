@@ -44,6 +44,15 @@ module eventhub './modules/eventhub.bicep' = {
   }
 }
 
+module storageAccount './modules/storage.bicep' = {
+  name: '${saName}${deploymentSuffix}'
+  params: {
+   saname: '${saName}${deploymentSuffix}'
+   location: deploymentLocation
+   eventHubId: '${eventhub.outputs.eventhubClusterId}/eventhubs/historicdata'
+  }
+}
+
 module digitalTwin './modules/digitaltwin.bicep' = {
   name: digitalTwinlName
   params: {
@@ -86,6 +95,7 @@ output eventhubNamespace string = eventhub.outputs.eventhubNamespace
 output digitalTwinName string = digitalTwin.outputs.digitalTwinName
 output digitalTwinHostName string = digitalTwin.outputs.digitalTwinHostName
 output saName string = storageAccount.outputs.saName
+output saId string = storageAccount.outputs.saId
 output adxName string = adxCluster.outputs.adxName
 output adxClusterId string = adxCluster.outputs.adxClusterId
 output location string = deploymentLocation

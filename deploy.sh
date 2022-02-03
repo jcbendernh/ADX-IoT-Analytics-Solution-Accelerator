@@ -61,11 +61,13 @@ function get_deployment_output() {
     dtHostName=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.digitalTwinHostName.value --output tsv)
     saName=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.saName.value --output tsv)
     saKey=$(az storage account keys list --account-name $saName --query [0].value -o tsv)
+    saId=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.saId.value --output tsv)
     adxName=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.adxName.value --output tsv)
     adxResoureId=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.adxClusterId.value --output tsv)
     location=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.location.value --output tsv)
     eventHubNSId=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.eventhubClusterId.value --output tsv)
     eventHubResourceId="$eventHubNSId/eventhubs/iotdata"
+    eventHubHistoricId="$eventHubNSId/eventhubs/historicdata"
     iotCentralName=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.iotCentralName.value --output tsv)
     iotCentralAppID=$(az iot central app show -n $iotCentralName -g $rgName --query  applicationId --output tsv)
     numDevices=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.deviceNumber.value --output tsv)
@@ -77,8 +79,6 @@ function configure_ADX_cluster() {
     sed -i "s/<saname>/$saName/g" config/configDB.kql ;\
     sed -i "s/<sakey>/$saKey/g" config/configDB.kql ;\
     az storage blob upload -f config/configDB.kql -c adxscript -n configDB.kql \
-        --account-key $saKey --account-name $saName --only-show-errors --output none  ;\
-    az storage blob upload -f config/Thermostat_January2022.csv -c adxscript -n Thermostat_January2022.csv \
         --account-key $saKey --account-name $saName --only-show-errors --output none  ;\
     blobURI="https://$saName.blob.core.windows.net/adxscript/configDB.kql"  ;\
     blobSAS=$(az storage blob generate-sas --account-name $saName --container-name adxscript \
@@ -92,11 +92,12 @@ function configure_ADX_cluster() {
         --data-format 'JSON' --table-name 'StageIoTRawData' --mapping-rule-name 'StageIoTRawData_mapping' \
         --compression 'None' --resource-group $rgName --only-show-errors --output none
 
-    az kusto data-connection event-grid create --cluster-name $adxName --name "IoTHistoric" \
-        --database-name "IoTAnalytics" --location $location --consumer-group '$Default' \
-        --event-hub-resource-id $eventHubResourceId --managed-identity-resource-id $adxResoureId \
-        --data-format 'JSON' --table-name 'StageIoTRawData' --mapping-rule-name 'StageIoTRawData_mapping' \
-        --compression 'None' --resource-group $rgName --only-show-errors --output none
+    az kusto data-connection event-grid create --cluster-name $adxName -g $rgName --database-name "IoTAnalytics" \
+        --table-name "Thermostats" --name "HistoricalLoad" --ignore-first-record true --data-format csv  \
+        --mapping-rule-name "Thermostats_mapping" --storage-account-resource-id $saId \
+        --consumer-group '$default' --event-hub-resource-id eventHubHistoricId
+    az storage blob upload -f config/Thermostat_January2022.csv -c adxscript -n Thermostat_January2022.csv \
+        --account-key $saKey --account-name $saName --only-show-errors --output none  ;\
 }
 
 function create_digital_twin_models() {
