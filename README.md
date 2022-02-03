@@ -16,6 +16,9 @@ The following will deploy the following:
   - StageIoTRaw table where data lands from Event Hub to get new data
   - Thermastat table with update policy to transform raw data
   - Historical data from January 2022 loaded into Thermostat table
+  - Two functions
+    - GetDevicesbyOffice: query ADT by Office names to get all DeviceIds at the office
+    - GetDevicesbyOfficeFloor: query ADT by Office and Floor to get all Devices on that floor 
 
 ## Deployment instructions
 
