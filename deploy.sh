@@ -74,7 +74,11 @@ function get_deployment_output() {
 
 function configure_ADX_cluster() {
     sed -i "s/<dtURI>/$dtHostName/g" config/configDB.kql ;\
+    sed -i "s/<saname>/$saName/g" config/configDB.kql ;\
+    sed -i "s/<sakey>/$saKey/g" config/configDB.kql ;\
     az storage blob upload -f config/configDB.kql -c adxscript -n configDB.kql \
+        --account-key $saKey --account-name $saName --only-show-errors --output none  ;\
+    az storage blob upload -f config/Thermostat_January2022.csv -c adxscript -n Thermostat_January2022.csv \
         --account-key $saKey --account-name $saName --only-show-errors --output none  ;\
     blobURI="https://$saName.blob.core.windows.net/adxscript/configDB.kql"  ;\
     blobSAS=$(az storage blob generate-sas --account-name $saName --container-name adxscript \

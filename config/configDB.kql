@@ -38,3 +38,6 @@
 
 .alter table Thermostats policy update 
 @'[{ "IsEnabled": true, "Source": "StageIoTRawData", "Query": "ExtractThermostatData()", "IsTransactional": false, "PropagateIngestionProperties": false}]'
+
+.ingest async into table Thermostats (h'https://<saname>.blob.core.windows.net/adxscript/Thermostat_January2022.csv;<sakey>')
+  with (format='csv',ignoreFirstRecord=true)
