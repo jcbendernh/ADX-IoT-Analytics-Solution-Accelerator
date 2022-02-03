@@ -9,14 +9,6 @@ param deploymentSuffix string
 param numDevices int
 param principalId string
 
-module storageAccount './modules/storage.bicep' = {
-  name: '${saName}${deploymentSuffix}'
-  params: {
-   saname: '${saName}${deploymentSuffix}'
-   location: deploymentLocation
-  }
-}
-
 module iotCentralApp './modules/iotcentral.bicep' = {
   name: iotCentralName
   params: {
