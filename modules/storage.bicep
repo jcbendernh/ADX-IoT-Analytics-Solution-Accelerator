@@ -39,7 +39,7 @@ resource eventgrid 'Microsoft.EventGrid/systemTopics@2021-12-01' = {
       }
       filter: {
         includedEventTypes: [
-          'Microsoft.Storage.BlobCreate'
+          'Microsoft.Storage.BlobCreated'
         ]
         enableAdvancedFilteringOnArrays: true
       }

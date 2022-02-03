@@ -241,7 +241,7 @@ spinner "Creating model for Azure Digital Twins $dtName"
 
 # Complete configuration
 echo "Creating $numDevices Smart Knee Brace devices on IoT Central: $iotCentralName ($iotCentralAppID) and Digital Twins: $dtName"
-deploy_thermostat_devices # Deploy Smart Knee Brace simulated devices
+deploy_thermostat_devices # Deploy Thermostat simulated devices
 configure_IoT_Central_output & # On IoT Central, create an Event Hub export and destination with json payload
 spinner " Creating IoT Central App export and destination on IoT Central: $iotCentralName ($iotCentralAppID)"
 
