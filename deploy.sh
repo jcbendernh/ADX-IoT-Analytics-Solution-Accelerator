@@ -95,7 +95,7 @@ function configure_ADX_cluster() {
     az kusto data-connection event-grid create --cluster-name $adxName -g $rgName --database-name "IoTAnalytics" \
         --table-name "Thermostats" --name "HistoricalLoad" --ignore-first-record true --data-format csv  \
         --mapping-rule-name "Thermostats_mapping" --storage-account-resource-id $saId \
-        --consumer-group '$default' --event-hub-resource-id eventHubHistoricId
+        --consumer-group '$Default' --event-hub-resource-id $eventHubHistoricId
     az storage blob upload -f config/Thermostat_January2022.csv -c adxscript -n Thermostat_January2022.csv \
         --account-key $saKey --account-name $saName --only-show-errors --output none  ;\
 }
