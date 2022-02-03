@@ -2,11 +2,11 @@
 
 .alter table StageIoTRawData policy ingestionbatching @'{"MaximumBatchingTimeSpan":"00:00:30"}'
 
-// Create mapping command
-////////////////////////////////////////////////////////////
 .create table ['StageIoTRawData'] ingestion json mapping 'StageIoTRawData_mapping' '[{"column":"deviceId", "Properties":{"Path":"$[\'deviceId\']"}},{"column":"enqueuedTime", "Properties":{"Path":"$[\'enqueuedTime\']"}},{"column":"messageProperties", "Properties":{"Path":"$[\'messageProperties\']"}},{"column":"messageSource", "Properties":{"Path":"$[\'messageSource\']"}},{"column":"telemetry", "Properties":{"Path":"$[\'telemetry\']"}},{"column":"templateId", "Properties":{"Path":"$[\'templateId\']"}},{"column":"schema", "Properties":{"Path":"$[\'schema\']"}}]'
 
 .create table Thermostats (EnqueuedTimeUTC: datetime, DeviceId: string, BatteryLevel: long, Temp: real, Humidity: real) 
+
+.create table ['Thermostats'] ingestion csv mapping 'Thermostats_mapping' '[{"column":"EnqueuedTimeUTC", "Properties":{"Ordinal":"0"}},{"column":"DeviceId", "Properties":{"Ordinal":"1"}},{"column":"BatteryLevel", "Properties":{"Ordinal":"2"}},{"column":"Temp", "Properties":{"Ordinal":"3"}},{"column":"Humidity", "Properties":{"Ordinal":"4"}}]'
 
 .create-or-alter function with (docstring = "Used for Thermostats Update Policy",folder = "Functions") ExtractThermostatData {
 	StageIoTRawData
@@ -33,11 +33,5 @@
     | project Office=tostring(Office), Floor=tostring(Floor), DeviceId=tostring(DeviceId)
 }
 
-
-
-
 .alter table Thermostats policy update 
 @'[{ "IsEnabled": true, "Source": "StageIoTRawData", "Query": "ExtractThermostatData()", "IsTransactional": false, "PropagateIngestionProperties": false}]'
-
-.ingest async into table Thermostats (h'https://<saname>.blob.core.windows.net/adxscript/Thermostat_January2022.csv;<sakey>')
-  with (format='csv',ignoreFirstRecord=true)

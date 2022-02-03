@@ -91,6 +91,12 @@ function configure_ADX_cluster() {
         --event-hub-resource-id $eventHubResourceId --managed-identity-resource-id $adxResoureId \
         --data-format 'JSON' --table-name 'StageIoTRawData' --mapping-rule-name 'StageIoTRawData_mapping' \
         --compression 'None' --resource-group $rgName --only-show-errors --output none
+
+    az kusto data-connection event-grid create --cluster-name $adxName --name "IoTHistoric" \
+        --database-name "IoTAnalytics" --location $location --consumer-group '$Default' \
+        --event-hub-resource-id $eventHubResourceId --managed-identity-resource-id $adxResoureId \
+        --data-format 'JSON' --table-name 'StageIoTRawData' --mapping-rule-name 'StageIoTRawData_mapping' \
+        --compression 'None' --resource-group $rgName --only-show-errors --output none
 }
 
 function create_digital_twin_models() {
