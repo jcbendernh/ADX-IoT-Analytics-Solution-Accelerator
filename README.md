@@ -45,7 +45,7 @@ On the [Azure Cloud Shell](https://shell.azure.com/) run the following commands 
     . ./deploy.sh
     ```
 
-5. Finally, download the [Power BI report](/assets/Connected_Devices.pbix), update the data source to point to yoir newly deployed Azure Data Explorer database, and refresh the data in the report.
+
 
 ## Files used in the solution
 
