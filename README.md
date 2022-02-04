@@ -41,7 +41,7 @@ On the [Azure Cloud Shell](https://shell.azure.com/) run the following commands 
 
 4. Deploy solution
     ```bash
-    cd PatientMonitoringDemo
+    cd ADXIoTAnalytics
     . ./deploy.sh
     ```
 
