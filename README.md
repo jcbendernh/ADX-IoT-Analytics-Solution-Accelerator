@@ -44,6 +44,8 @@ On the [Azure Cloud Shell](https://shell.azure.com/) run the following commands 
     cd PatientMonitoringDemo
     . ./deploy.sh
     ```
+### Example:
+![SampleCLIOutput](assets/SampleCLIOutput.png "SampleCLIOutput")
 
 
 
