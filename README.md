@@ -44,6 +44,9 @@ On the [Azure Cloud Shell](https://shell.azure.com/) run the following commands 
     cd ADXIoTAnalytics
     . ./deploy.sh
     ```
+
+5. Explore the data in ADX. Here is some sample queries to get you started! [KQL Sample](kqlsample/Sample.kql)
+
 ### Example:
 ![SampleCLIOutput](assets/SampleCLIOutput.png "SampleCLIOutput")
 
