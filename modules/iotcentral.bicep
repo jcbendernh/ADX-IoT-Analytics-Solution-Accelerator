@@ -1,5 +1,7 @@
 
 param iotCentralName string = 'iotcentralpatmon'
+param iotDisplayName string
+param iotTemplate string
 param location string = resourceGroup().location
 param principalId string 
 
@@ -13,9 +15,9 @@ resource myIotCentralApp 'Microsoft.IoTCentral/iotApps@2021-06-01' = {
     type: 'SystemAssigned'
   }
   properties: {
-    displayName: 'Store Analytics'
+    displayName: '$iotDisplayName'
     subdomain: '${iotCentralName}domain'
-    template: 'iotc-store'
+    template: '$iotTemplate'
   }
 }
 

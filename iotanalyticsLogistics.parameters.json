@@ -21,7 +21,16 @@
         "value": "digitaltwinpm"
       },
       "numDevices": {
-        "value": 36
+        "value": 1000
+      },
+      "deployADX": {
+        "value": false
+      },
+      "deployADT": {
+        "value": false
+      },
+      "IoTCentralType": {
+        "value": "Logistics"
       }
     }
 }

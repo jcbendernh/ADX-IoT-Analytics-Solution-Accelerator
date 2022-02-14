@@ -50,10 +50,17 @@ function create_resource_group() {
 }
 
 function deploy_azure_services() {
-    az deployment group create -n $deploymentName -g $rgName \
-        --template-file main.bicep \
-        --parameters deploymentSuffix=$randomNum principalId=$principalId @iotanalytics.parameters.json \
-        --only-show-errors --output none
+    if iotCType==1 then
+        az deployment group create -n $deploymentName -g $rgName \
+            --template-file main.bicep \
+            --parameters deploymentSuffix=$randomNum principalId=$principalId @iotanalyticsStore.parameters.json \
+            --only-show-errors --output none
+    else
+        az deployment group create -n $deploymentName -g $rgName \
+            --template-file main.bicep \
+            --parameters deploymentSuffix=$randomNum principalId=$principalId @iotanalyticsLogistic.parameters.json \
+            --only-show-errors --output none
+    fi
 }
 
 function get_deployment_output() {
@@ -72,6 +79,9 @@ function get_deployment_output() {
     iotCentralAppID=$(az iot central app show -n $iotCentralName -g $rgName --query  applicationId --output tsv)
     numDevices=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.deviceNumber.value --output tsv)
     eventHubConnectionString=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.eventHubConnectionString.value --output tsv)
+    deployADX=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.deployADX.value --output tsv)
+    deployADT=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.deployADT.value --output tsv)
+    iotCentralType=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.iotCentralType.value --output tsv)
 }
 
 function configure_ADX_cluster() {
@@ -182,18 +192,25 @@ function create_digital_twin_models() {
 function deploy_thermostat_devices() {
     for (( c=1; c<=$numDevices; c++ ))
     do
+        if iotCentralType=='Store' then
+            iotCentralTemplate='dtmi:m43gbjjsrr5:fp1yz0dm0qs'
+        else
+            iotCentralTemplate='dtmi:ltifbs50b:mecybcwqm'
+
         deviceId=$(cat /proc/sys/kernel/random/uuid)
         az iot central device create --device-id $deviceId --app-id $iotCentralAppID \
             --template dtmi:m43gbjjsrr5:fp1yz0dm0qs --simulated --only-show-errors --output none
 
-        floornum=$(expr $c % 18)
+        if deployADT then
+            floornum=$(expr $c % 18)
         
-        floor=${floors[$floornum]}
+            floor=${floors[$floornum]}
             
-        az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Thermostat;1" --twin-id $deviceId \
-            --only-show-errors --output none ;\
-        az dt twin relationship create -n $dtName --relationship-id "contains${deviceId}" \
-            --relationship 'floorcontainsdevices' --source $floor --target $deviceId --only-show-errors --output none
+            az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Thermostat;1" --twin-id $deviceId \
+                --only-show-errors --output none ;\
+            az dt twin relationship create -n $dtName --relationship-id "contains${deviceId}" \
+                --relationship 'floorcontainsdevices' --source $floor --target $deviceId --only-show-errors --output none
+        fi
     done
 }
 
@@ -215,6 +232,13 @@ deploymentName=ADXIoTAnalyticsDeployment$randomNum
 rgName=ADXIoTAnalytics$randomNum
 principalId=$(az ad signed-in-user show --query objectId -o tsv)
 
+read -p "Would you like to deploy the Store App or the Logistic App? Enter 1 for Store or 2 for Logistics " iotCType
+
+while [ $iotCType -ne 1 || $iotCType -ne 2 ]
+do
+    read -p "Please enter either 1 for Store or 2 for Logistics " iotCType
+done
+
 # Setup array to utilize when assiging devices to departments and patients
 floors=('DAL1' 'DAL2' 'DAL3' 'DAL4' 'DAL5' 'DAL6' 'SEA1' 'SEA2' 'SEA3' 'SEA4' 'SEA5' 'SEA6' 'ATL1' 'ATL2' 'ATL3' 'ATL4' 'ATL5' 'ATL6')
 
@@ -232,17 +256,29 @@ echo "2. Starting configuration for deployment $deploymentName"
 get_deployment_output  # Get Deployment output values
 
 # Start Configuration
-configure_ADX_cluster & # Configure ADX cluster
-spinner "Configuring ADX Cluster"
+if deployADX then
+    configure_ADX_cluster & # Configure ADX cluster
+    spinner "Configuring ADX Cluster"
+fi
 # Get/Refresh IoT Central Token 
 az account get-access-token --resource https://apps.azureiotcentral.com --only-show-errors --output none
-create_digital_twin_models & # Create all the models from folder in git repo
-spinner "Creating model for Azure Digital Twins $dtName"
+
+if deployADT then
+    create_digital_twin_models & # Create all the models from folder in git repo
+    spinner "Creating model for Azure Digital Twins $dtName"
+fi
 
 # Complete configuration
-echo "Creating $numDevices Smart Knee Brace devices on IoT Central: $iotCentralName ($iotCentralAppID) and Digital Twins: $dtName"
-deploy_thermostat_devices # Deploy Thermostat simulated devices
-configure_IoT_Central_output & # On IoT Central, create an Event Hub export and destination with json payload
-spinner " Creating IoT Central App export and destination on IoT Central: $iotCentralName ($iotCentralAppID)"
+if deployADT then
+    echo "Creating $numDevices devices on IoT Central: $iotCentralName ($iotCentralAppID) and Digital Twins: $dtName"
+    deploy_thermostat_devices # Deploy Thermostat simulated devices
+    configure_IoT_Central_output & # On IoT Central, create an Event Hub export and destination with json payload
+    spinner " Creating IoT Central App export and destination on IoT Central: $iotCentralName ($iotCentralAppID)"
+else
+    echo "Creating $numDevices devices on IoT Central: $iotCentralName ($iotCentralAppID)"
+    deploy_thermostat_devices # Deploy Thermostat simulated devices
+    configure_IoT_Central_output & # On IoT Central, create an Event Hub export and destination with json payload
+    spinner " Creating IoT Central App export and destination on IoT Central: $iotCentralName ($iotCentralAppID)"
+fi
 
 echo "3. Configuration completed"

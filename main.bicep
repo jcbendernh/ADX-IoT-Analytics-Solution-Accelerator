@@ -8,17 +8,38 @@ param saName string = 'iotmonitoringsa'
 param deploymentSuffix string
 param numDevices int
 param principalId string
+param deployADX bool = true
+param deployADT bool = true
+@allowed([
+  'Store'
+  'Logistics'
+])
+param IoTCentralType string = 'Store'
 
-module iotCentralApp './modules/iotcentral.bicep' = {
+
+module iotStoreCentralApp './modules/iotcentral.bicep' = if(IoTCentralType=='Store') {
   name: iotCentralName
   params: {
     iotCentralName: '${iotCentralName}${deploymentSuffix}'
+    iotDisplayName: 'Store Analytics'
+    iotTemplate: 'iotc-store'
     location: deploymentLocation
     principalId: principalId
   }
 }
 
-module adxCluster './modules/adx.bicep' = {
+module iotLogisticCentralApp './modules/iotcentral.bicep' = if(IoTCentralType=='Store') {
+  name: iotCentralName
+  params: {
+    iotCentralName: '${iotCentralName}${deploymentSuffix}'
+    iotDisplayName: 'Logistic Analytics'
+    iotTemplate: 'iotc-logistics'
+    location: deploymentLocation
+    principalId: principalId
+  }
+}
+
+module adxCluster './modules/adx.bicep' = if(deployADX){
   name: adxName
   params: {
     adxName: '${adxName}${deploymentSuffix}'
@@ -45,7 +66,7 @@ module storageAccount './modules/storage.bicep' = {
   }
 }
 
-module digitalTwin './modules/digitaltwin.bicep' = {
+module digitalTwin './modules/digitaltwin.bicep' = if(deployADT) {
   name: digitalTwinlName
   params: {
     digitalTwinName: '${digitalTwinlName}${deploymentSuffix}'
@@ -91,4 +112,6 @@ output saId string = storageAccount.outputs.saId
 output adxName string = adxCluster.outputs.adxName
 output adxClusterId string = adxCluster.outputs.adxClusterId
 output location string = deploymentLocation
-
+output deployADX bool = deployADX
+output deployADT bool = deployADT
+output iotCentralType string = IoTCentralType
