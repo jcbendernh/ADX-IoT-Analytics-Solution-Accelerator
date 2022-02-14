@@ -193,16 +193,19 @@ function create_digital_twin_models() {
 function deploy_thermostat_devices() {
     for (( c=1; c<=$numDevices; c++ ))
     do
-        if iotCentralType=='Store' then
+        if iotCentralType=='Store' 
+        then
             iotCentralTemplate='dtmi:m43gbjjsrr5:fp1yz0dm0qs'
         else
             iotCentralTemplate='dtmi:ltifbs50b:mecybcwqm'
+        fi
 
         deviceId=$(cat /proc/sys/kernel/random/uuid)
         az iot central device create --device-id $deviceId --app-id $iotCentralAppID \
             --template dtmi:m43gbjjsrr5:fp1yz0dm0qs --simulated --only-show-errors --output none
 
-        if deployADT then
+        if deployADT 
+        then
             floornum=$(expr $c % 18)
         
             floor=${floors[$floornum]}
@@ -235,7 +238,7 @@ principalId=$(az ad signed-in-user show --query objectId -o tsv)
 
 read -p "Would you like to deploy the Store App or the Logistic App? Enter 1 for Store or 2 for Logistics " iotCType
 
-while [ $iotCType -ne 1 || $iotCType -ne 2 ]
+while [ $iotCType != 1 ] && [ $iotCType != 2 ]
 do
     read -p "Please enter either 1 for Store or 2 for Logistics " iotCType
 done

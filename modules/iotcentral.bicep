@@ -15,9 +15,9 @@ resource myIotCentralApp 'Microsoft.IoTCentral/iotApps@2021-06-01' = {
     type: 'SystemAssigned'
   }
   properties: {
-    displayName: '$iotDisplayName'
+    displayName: iotDisplayName
     subdomain: '${iotCentralName}domain'
-    template: '$iotTemplate'
+    template: iotTemplate
   }
 }
 
