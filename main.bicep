@@ -11,29 +11,23 @@ param principalId string
 param deployADX bool = true
 param deployADT bool = true
 @allowed([
-  'Store'
-  'Logistics'
+  'Store Analytics'
+  'Logistic Analytics'
 ])
-param IoTCentralType string = 'Store'
+param IoTCentralType string = 'Store Analytics'
+@allowed([
+  'iotc-store'
+  'iotc-logistics'
+])
+param iotTemplate string = 'iotc-store'
 
 
-module iotStoreCentralApp './modules/iotcentral.bicep' = if(IoTCentralType=='Store') {
+module iotStoreCentralApp './modules/iotcentral.bicep' = {
   name: iotCentralName
   params: {
     iotCentralName: '${iotCentralName}${deploymentSuffix}'
-    iotDisplayName: 'Store Analytics'
-    iotTemplate: 'iotc-store'
-    location: deploymentLocation
-    principalId: principalId
-  }
-}
-
-module iotLogisticCentralApp './modules/iotcentral.bicep' = if(IoTCentralType=='Store') {
-  name: iotCentralName
-  params: {
-    iotCentralName: '${iotCentralName}${deploymentSuffix}'
-    iotDisplayName: 'Logistic Analytics'
-    iotTemplate: 'iotc-logistics'
+    iotDisplayName: IoTCentralType
+    iotTemplate: iotTemplate
     location: deploymentLocation
     principalId: principalId
   }

@@ -30,7 +30,10 @@
         "value": false
       },
       "IoTCentralType": {
-        "value": "Logistics"
+        "value": "Logistics Analytics"
+      },
+      "iotTemplate": {
+        "value": "iotc-logistics"
       }
     }
 }
