@@ -12,7 +12,7 @@ param deployADX bool = true
 param deployADT bool = true
 @allowed([
   'Store Analytics'
-  'Logistic Analytics'
+  'Logistics Analytics'
 ])
 param IoTCentralType string = 'Store Analytics'
 @allowed([
