@@ -30,7 +30,10 @@
         "value": true
       },
       "IoTCentralType": {
-        "value": "Store"
+        "value": "Store Analytics"
+      },
+      "iotTemplate": {
+        "value": "iotc-store"
       }
     }
 }
