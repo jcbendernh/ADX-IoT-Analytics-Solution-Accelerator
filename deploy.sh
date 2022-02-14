@@ -50,7 +50,8 @@ function create_resource_group() {
 }
 
 function deploy_azure_services() {
-    if iotCType==1 then
+    if iotCType==1 
+    then
         az deployment group create -n $deploymentName -g $rgName \
             --template-file main.bicep \
             --parameters deploymentSuffix=$randomNum principalId=$principalId @iotanalyticsStore.parameters.json \
