@@ -202,7 +202,7 @@ function deploy_thermostat_devices() {
 
         deviceId=$(cat /proc/sys/kernel/random/uuid)
         az iot central device create --device-id $deviceId --app-id $iotCentralAppID \
-            --template dtmi:m43gbjjsrr5:fp1yz0dm0qs --simulated --only-show-errors --output none
+            --template $iotCentralTemplate --simulated --only-show-errors --output none
 
         if [ $deployADT == true ] 
         then
