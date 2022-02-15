@@ -193,7 +193,7 @@ function create_digital_twin_models() {
 function deploy_thermostat_devices() {
     for (( c=1; c<=$numDevices; c++ ))
     do
-        if iotCentralType=='Store' 
+        if [ $iotCentralType == 'Store' ] 
         then
             iotCentralTemplate='dtmi:m43gbjjsrr5:fp1yz0dm0qs'
         else
@@ -204,7 +204,7 @@ function deploy_thermostat_devices() {
         az iot central device create --device-id $deviceId --app-id $iotCentralAppID \
             --template dtmi:m43gbjjsrr5:fp1yz0dm0qs --simulated --only-show-errors --output none
 
-        if deployADT 
+        if [ $deployADT == true ] 
         then
             floornum=$(expr $c % 18)
         
@@ -260,7 +260,7 @@ echo "2. Starting configuration for deployment $deploymentName"
 get_deployment_output  # Get Deployment output values
 
 # Start Configuration
-if [ $deployADX ] 
+if [ $deployADX == true ] 
 then
     configure_ADX_cluster & # Configure ADX cluster
     spinner "Configuring ADX Cluster"
@@ -269,14 +269,14 @@ fi
 # Get/Refresh IoT Central Token 
 az account get-access-token --resource https://apps.azureiotcentral.com --only-show-errors --output none
 
-if [ $deployADT ] 
+if [ $deployADT == true ] 
 then
     create_digital_twin_models & # Create all the models from folder in git repo
     spinner "Creating model for Azure Digital Twins $dtName"
 fi
 
 # Complete configuration
-if [ $deployADT ] 
+if [ $deployADT == true ] 
 then
     echo "Creating $numDevices devices on IoT Central: $iotCentralName ($iotCentralAppID) and Digital Twins: $dtName"
     deploy_thermostat_devices # Deploy Thermostat simulated devices
