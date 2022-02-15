@@ -28,6 +28,8 @@ On the [Azure Cloud Shell](https://shell.azure.com/) run the following commands 
     az login
     ```
 
+    **Note: You must do this step or you will see errors when running the script when connecting to IoT Central**
+
 2. If you have more than one subscription, select the appropriate one:
     ```bash
     az account set --subscription "<your-subscription>"
@@ -45,7 +47,11 @@ On the [Azure Cloud Shell](https://shell.azure.com/) run the following commands 
     . ./deploy.sh
     ```
 
-5. Explore the data in ADX. Here is some sample queries to get you started! [KQL Sample](kqlsample/Sample.kql)
+5. Choose which environment to deploy from the options provided 
+
+### IoT Analytics Workshop 
+
+6. Explore the data in ADX. Here is some sample queries to get you started! [KQL Sample](kqlsample/Sample.kql)
 
 ### Example:
 ![SampleCLIOutput](assets/SampleCLIOutput.png "SampleCLIOutput")
