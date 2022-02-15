@@ -235,11 +235,18 @@ deploymentName=ADXIoTAnalyticsDeployment$randomNum
 rgName=ADXIoTAnalytics$randomNum
 principalId=$(az ad signed-in-user show --query objectId -o tsv)
 
-read -p "Would you like to deploy the Store App or the Logistic App? Enter 1 for Store or 2 for Logistics " iotCType
+echo "Please select from below deployment options"
+echo "     1. ADX IoT Workshop"
+echo "     2. ADX IoT Open Hack"
+read -p "Enter number:" iotCType
 
 while [ $iotCType != 1 ] && [ $iotCType != 2 ]
 do
-    read -p "Please enter either 1 for Store or 2 for Logistics " iotCType
+    echo "UNKNOWN OPTION SELECTED :("
+    echo "Please select from below deployment options"
+    echo "     1. ADX IoT Workshop"
+    echo "     2. ADX IoT Open Hack"
+    read -p "Enter number:" iotCType
 done
 
 # Setup array to utilize when assiging devices to departments and patients
@@ -247,11 +254,17 @@ floors=('DAL1' 'DAL2' 'DAL3' 'DAL4' 'DAL5' 'DAL6' 'SEA1' 'SEA2' 'SEA3' 'SEA4' 'S
 
 banner # Show Welcome banner
 
-echo '1. Starting solution deployment'
+if [ $iotCType -eq 1 ]
+then
+    echo '1. Starting deployment of IoT Analytics Lab'
+else
+    echo '1. Starting deployment of IoT Open Hack Environment'
+fi
+
 add_required_extensions & # Install/Update required eztensions
 spinner "Installing IoT Extensions"
 create_resource_group & # Create parent resurce group
-spinner "Creating Resource Group"
+spinner "Creating Resource Group with name $rgName"
 deploy_azure_services & # Create all additional services using main Bicep template
 spinner "Deploying Azure Services"
 
