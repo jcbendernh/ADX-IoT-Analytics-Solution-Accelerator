@@ -82,7 +82,7 @@ resource eventHubReference 'Microsoft.EventHub/namespaces@2021-11-01'  existing 
 }
 
 // Grant Azure Event Hubs Data receiver role to ADX
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = if(deployADX){
   name: guid(resourceGroup().id, principalId, eventHubsDataReceiverRoleDefinition.id)
   scope: eventHubReference
   properties: {
