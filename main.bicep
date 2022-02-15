@@ -33,7 +33,7 @@ module iotStoreCentralApp './modules/iotcentral.bicep' = {
   }
 }
 
-module adxCluster './modules/adx.bicep' = if(deployADX){
+module adxCluster './modules/adx.bicep' = if(deployADX==true){
   name: adxName
   params: {
     adxName: '${adxName}${deploymentSuffix}'
@@ -48,6 +48,7 @@ module eventhub './modules/eventhub.bicep' = {
     eventHubName: '${eventHubName}${deploymentSuffix}'
     location: deploymentLocation
     eventHubSKU: 'Standard'
+    adxDeploy: deployADX
   }
 }
 
@@ -60,7 +61,7 @@ module storageAccount './modules/storage.bicep' = {
   }
 }
 
-module digitalTwin './modules/digitaltwin.bicep' = if(deployADT) {
+module digitalTwin './modules/digitaltwin.bicep' = if(deployADT==true) {
   name: digitalTwinlName
   params: {
     digitalTwinName: '${digitalTwinlName}${deploymentSuffix}'

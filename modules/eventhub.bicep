@@ -1,6 +1,7 @@
 param eventHubName string
 param location string = resourceGroup().location
 param eventHubSKU string = 'Standard'
+param adxDeploy bool
 var eventHubAuthRuleName = 'ListenSend'
 
 resource eventhubCluster 'Microsoft.EventHub/namespaces@2021-11-01' = {
@@ -22,7 +23,7 @@ resource eventHubNamespaceName_eventHubName 'Microsoft.EventHub/namespaces/event
   }
 }
 
-resource eventHubNamespaceName_historicHubName 'Microsoft.EventHub/namespaces/eventhubs@2021-11-01' = {
+resource eventHubNamespaceName_historicHubName 'Microsoft.EventHub/namespaces/eventhubs@2021-11-01' = if(adxDeploy){
   parent: eventhubCluster
   name: 'historicdata'
   properties: {
