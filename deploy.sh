@@ -191,7 +191,7 @@ function create_digital_twin_models() {
 }
 
 function deploy_thermostat_devices() {
-    if [ "$iotCentralType" == 'Store' ] 
+    if [ "$iotCentralType" == 'Store Analytics' ] 
     then
         iotCentralTemplate='dtmi:m43gbjjsrr5:fp1yz0dm0qs'
     else
