@@ -191,15 +191,14 @@ function create_digital_twin_models() {
 }
 
 function deploy_thermostat_devices() {
+    if [ "$iotCentralType" == 'Store' ] 
+    then
+        iotCentralTemplate='dtmi:m43gbjjsrr5:fp1yz0dm0qs'
+    else
+        iotCentralTemplate='dtmi:ltifbs50b:mecybcwqm'
+    fi
     for (( c=1; c<=$numDevices; c++ ))
-    do
-        if [ $iotCentralType == 'Store' ] 
-        then
-            iotCentralTemplate='dtmi:m43gbjjsrr5:fp1yz0dm0qs'
-        else
-            iotCentralTemplate='dtmi:ltifbs50b:mecybcwqm'
-        fi
-
+    do 
         deviceId=$(cat /proc/sys/kernel/random/uuid)
         az iot central device create --device-id $deviceId --app-id $iotCentralAppID \
             --template $iotCentralTemplate --simulated --only-show-errors --output none
