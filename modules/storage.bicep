@@ -1,6 +1,7 @@
 param saname string
 param location string = resourceGroup().location
-param eventHubId string 
+param eventHubId string
+param deployADX bool 
 
 resource storageaccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   kind: 'StorageV2'
@@ -20,7 +21,7 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
   ]
 }
 
-resource eventgrid 'Microsoft.EventGrid/systemTopics@2021-12-01' = {
+resource eventgrid 'Microsoft.EventGrid/systemTopics@2021-12-01' = if(deployADX){
   name: 'BlobCreate'
   location: location
   properties: {
@@ -28,7 +29,7 @@ resource eventgrid 'Microsoft.EventGrid/systemTopics@2021-12-01' = {
     topicType: 'Microsoft.Storage.StorageAccounts'
   }
 
-  resource eventSub 'eventSubscriptions' = {
+  resource eventSub 'eventSubscriptions' = if(deployADX){
     name: 'HistoricData'
     properties: {
       destination: {

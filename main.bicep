@@ -8,8 +8,8 @@ param saName string = 'iotmonitoringsa'
 param deploymentSuffix string
 param numDevices int
 param principalId string
-param deployADX bool = true
-param deployADT bool = true
+param deployADX bool
+param deployADT bool
 @allowed([
   'Store Analytics'
   'Logistics Analytics'
@@ -33,7 +33,7 @@ module iotStoreCentralApp './modules/iotcentral.bicep' = {
   }
 }
 
-module adxCluster './modules/adx.bicep' = if(deployADX==true){
+module adxCluster './modules/adx.bicep' = if(deployADX){
   name: adxName
   params: {
     adxName: '${adxName}${deploymentSuffix}'
@@ -58,10 +58,11 @@ module storageAccount './modules/storage.bicep' = {
    saname: '${saName}${deploymentSuffix}'
    location: deploymentLocation
    eventHubId: '${eventhub.outputs.eventhubClusterId}/eventhubs/historicdata'
+   deployADX: deployADX
   }
 }
 
-module digitalTwin './modules/digitaltwin.bicep' = if(deployADT==true) {
+module digitalTwin './modules/digitaltwin.bicep' = if(deployADT) {
   name: digitalTwinlName
   params: {
     digitalTwinName: '${digitalTwinlName}${deploymentSuffix}'
