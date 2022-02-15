@@ -33,12 +33,13 @@ module iotStoreCentralApp './modules/iotcentral.bicep' = {
   }
 }
 
-module adxCluster './modules/adx.bicep' = if(deployADX){
+module adxCluster './modules/adx.bicep' = {
   name: adxName
   params: {
     adxName: '${adxName}${deploymentSuffix}'
     location: deploymentLocation
     adxSKU: adxSKU
+    deployADX: deployADX
   }
 }
 

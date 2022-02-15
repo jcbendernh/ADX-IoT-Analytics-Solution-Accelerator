@@ -1,8 +1,9 @@
 param adxName string
 param location string = resourceGroup().location
 param adxSKU string
+param deployADX bool
 
-resource adxCluster 'Microsoft.Kusto/clusters@2021-08-27' = {
+resource adxCluster 'Microsoft.Kusto/clusters@2021-08-27' = if(deployADX){
   name: adxName
   location: location
   sku: {
@@ -15,7 +16,7 @@ resource adxCluster 'Microsoft.Kusto/clusters@2021-08-27' = {
   }
 }
 
-resource adxDb 'Microsoft.Kusto/clusters/databases@2021-08-27' = {
+resource adxDb 'Microsoft.Kusto/clusters/databases@2021-08-27' = if(deployADX){
   kind: 'ReadWrite'
   name: 'IoTAnalytics'
   location: location
@@ -26,7 +27,7 @@ resource adxDb 'Microsoft.Kusto/clusters/databases@2021-08-27' = {
   }
 }
 
-output adxClusterId string = adxCluster.id
-output adxClusterIdentity string = adxCluster.identity.principalId
-output adxName string = adxCluster.name
+output adxClusterId string = deployADX ? adxCluster.id : 'na'
+output adxClusterIdentity string = deployADX ? adxCluster.identity.principalId : 'na'
+output adxName string = deployADX ? adxCluster.name : 'na'
 
