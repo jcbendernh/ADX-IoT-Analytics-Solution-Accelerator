@@ -260,7 +260,8 @@ echo "2. Starting configuration for deployment $deploymentName"
 get_deployment_output  # Get Deployment output values
 
 # Start Configuration
-if [ $deployADX ] then
+if [ $deployADX ] 
+then
     configure_ADX_cluster & # Configure ADX cluster
     spinner "Configuring ADX Cluster"
 fi
@@ -268,13 +269,15 @@ fi
 # Get/Refresh IoT Central Token 
 az account get-access-token --resource https://apps.azureiotcentral.com --only-show-errors --output none
 
-if [ $deployADT ] then
+if [ $deployADT ] 
+then
     create_digital_twin_models & # Create all the models from folder in git repo
     spinner "Creating model for Azure Digital Twins $dtName"
 fi
 
 # Complete configuration
-if [ $deployADT ] then
+if [ $deployADT ] 
+then
     echo "Creating $numDevices devices on IoT Central: $iotCentralName ($iotCentralAppID) and Digital Twins: $dtName"
     deploy_thermostat_devices # Deploy Thermostat simulated devices
     configure_IoT_Central_output & # On IoT Central, create an Event Hub export and destination with json payload
