@@ -209,9 +209,9 @@ function deploy_thermostat_devices() {
         
             floor=${floors[$floornum]}
             
-            az dt twin create -n $dtName --dtmi "dtmi:StageIoTRawData:Thermostat;1" --twin-id $deviceId \
+            az dt twin create -n $dtName -g $rgName --dtmi "dtmi:StageIoTRawData:Thermostat;1" --twin-id $deviceId \
                 --only-show-errors --output none ;\
-            az dt twin relationship create -n $dtName --relationship-id "contains${deviceId}" \
+            az dt twin relationship create -n $dtName -g $rgName --relationship-id "contains${deviceId}" \
                 --relationship 'floorcontainsdevices' --source $floor --target $deviceId --only-show-errors --output none
         fi
     done
