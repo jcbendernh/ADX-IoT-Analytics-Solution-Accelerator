@@ -1,24 +1,35 @@
-# ADX IoT Analytics Demo
-Azure Data Explorer can provide valuable insights into your Iot workloads. In the following Demo we look at thermostat IoT Devices that are in 3 different office buildings.
+![MSUS Solution Accelerator](./images/MSUS%20Solution%20Accelerator%20Banner%20Two_981.jpg)
 
-The following will deploy the following:
-- IoT Central Store Analytics Template 
-  - 36 thermostat devices being created and simulated
-  - Setup Export to Event Hub of telemetry data
-- Event Hub 
-  - Data exported from IoT Central
-  - ADX Data Connection to ingest data
-- Azure Digital Twins
-  - Office, Floors, and Thermostat twins
-  - Atlanta, Dallas, Seattle offices with 6 Floors in each
-  - 36 Thermostat twins created spread across the 3 offices with 2 on each floor
-- Azure Data Explorer
-  - StageIoTRaw table where data lands from Event Hub to get new data
-  - Thermastat table with update policy to transform raw data
-  - Historical data from January 2022 loaded into Thermostat table
-  - Two functions
-    - GetDevicesbyOffice: query ADT by Office names to get all DeviceIds at the office
-    - GetDevicesbyOfficeFloor: query ADT by Office and Floor to get all Devices on that floor 
+# ADX IoT Analytics Solution Accelerator
+Azure Data Explorer can provide valuable insights into your Iot workloads. In this solution we will showcase what an IoT analytics solution would look like using simulated IoT Devices. This solution acceleartor allows you to choose between two different demo solutions.  
+
+- ADX IoT Workshop
+This will deploy a completely configured environment where after deployment you'll have simulated devices, an Azure Digitl Twins representation, configured Azure Data Explorer cluster with both historical data (month of January) and new simulated data flowing in through Event Hub via IoT Central. This will allow you to get to the KQL query experience immediately after deployment.
+  - IoT Central Store Analytics Template 
+    - 36 thermostat devices being created and simulated
+    - Setup Export to Event Hub of telemetry data
+  - Event Hub 
+    - Data exported from IoT Central
+    - ADX Data Connection to ingest data
+  - Azure Digital Twins
+    - Office, Floors, and Thermostat twins
+    - Atlanta, Dallas, Seattle offices with 6 Floors in each
+    - 36 Thermostat twins created spread across the 3 offices with 2 on each floor
+  - Azure Data Explorer
+    - StageIoTRaw table where data lands from Event Hub to get new data
+    - Thermastat table with update policy to transform raw data
+    - Historical data from January 2022 loaded into Thermostat table
+    - Two functions
+      - GetDevicesbyOffice: query ADT by Office names to get all DeviceIds at the office
+      - GetDevicesbyOfficeFloor: query ADT by Office and Floor to get all Devices on that floor 
+- [ADX IoT MicroHack](https://github.com/Azure/azure-kusto-microhack)
+This deploys the components needed for your IoT Analytics and lets you experience setting up the Azure Data Explorer Cluster and configuring the data ingestion.
+  - IoT Central Logistics Template 
+    - 1000 logistic devices being created and simulated
+    - Setup Export to Event Hub of telemetry data
+  - Event Hub 
+  - Storage Account
+
 
 ## Deployment instructions
 
@@ -37,9 +48,8 @@ On the [Azure Cloud Shell](https://shell.azure.com/) run the following commands 
 
 3. Get the latest version of the repository
     ```bash
-    git clone https://github.com/bwatts64/ADXIoTAnalytics.git
+    git clone https://github.com/MSUSSolutionAccelerators/ADX-IoT-Analytics-Solution-Accelerator.git
     ```
-    Optionally, You can update the patientmonitoring.parameters.json file to personalize your deployment.
 
 4. Deploy solution
     ```bash
@@ -51,12 +61,18 @@ On the [Azure Cloud Shell](https://shell.azure.com/) run the following commands 
 
 ### IoT Analytics Workshop 
 
-6. Explore the data in ADX. Here is some sample queries to get you started! [KQL Sample](kqlsample/Sample.kql)
+![IoT Analytics Workshop](./images/wslabarchitecture.png)
 
-### Example:
+Explore the data in ADX. Here is some sample queries to get you started! [KQL Sample](kqlsample/Sample.kql)
+
+### IoT MicroHack
+
+Explore content [here](https://github.com/Azure/azure-kusto-microhack)
+
+ ![IoT Micro Hack](./images/mharchitecture.png)
+
+### Deployment Example:
 ![SampleCLIOutput](assets/SampleCLIOutput.png "SampleCLIOutput")
-
-
 
 ## Files used in the solution
 
