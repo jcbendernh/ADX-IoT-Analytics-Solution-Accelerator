@@ -1,4 +1,6 @@
-# ADX IoT Analytics Demo
+![MSUS Solution Accelerator](./images/MSUS%20Solution%20Accelerator%20Banner%20Two_981.jpg)
+
+# ADX IoT Analytics Solution Accelerator
 Azure Data Explorer can provide valuable insights into your Iot workloads. In the following Demo we look at thermostat IoT Devices that are in 3 different office buildings.
 
 The following will deploy the following:
