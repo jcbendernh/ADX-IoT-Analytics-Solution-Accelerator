@@ -235,6 +235,7 @@ deploymentName=ADXIoTAnalyticsDeployment$randomNum
 rgName=ADXIoTAnalytics$randomNum
 principalId=$(az ad signed-in-user show --query objectId -o tsv)
 
+clear
 echo "Please select from below deployment options"
 echo "     1. ADX IoT Workshop"
 echo "     2. ADX IoT Open Hack"
