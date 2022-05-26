@@ -65,6 +65,7 @@ function deploy_azure_services() {
 }
 
 function get_deployment_output() {
+    rgName=ADXIoTAnalyticsJoBender
     dtName=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.digitalTwinName.value --output tsv)
     dtHostName=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.digitalTwinHostName.value --output tsv)
     saName=$(az deployment group show -n $deploymentName -g $rgName --query properties.outputs.saName.value --output tsv)
@@ -232,7 +233,7 @@ randomNum=$RANDOM
 currentDate=$(date)
 tomorrow=$(date +"%Y-%m-%dT00:00:00Z" -d "$currentDate +1 days")
 deploymentName=ADXIoTAnalyticsDeployment$randomNum
-rgName=ADXIoTAnalytics$randomNum
+rgName=ADXIoTAnalyticsJoBender
 principalId=$(az ad signed-in-user show --query objectId -o tsv)
 
 clear
